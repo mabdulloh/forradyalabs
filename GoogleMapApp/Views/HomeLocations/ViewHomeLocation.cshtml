@@ -1,0 +1,61 @@
+﻿@model IEnumerable<GoogleMapApp.Models.HomeLocation>
+@{
+    ViewBag.Title = "View Home Location";
+}
+
+<h2>View Home Location</h2>
+<style>
+    .infoDiv {
+        height: 200px;
+        width: 300px;
+        -webkit-user-select: none;
+        background-color: white;
+    }
+</style>
+<div id="googleMap" style="width:1000px;height:600px;"></div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyA9hxwI13Tm9NCGvcgSyRv7Y4h4Lp-xEnM&sensor=true&libraries=places"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            Initialize();
+        });
+
+        function Initialize() {
+            var map;
+            var MyLatLng = new google.maps.LatLng(-6.17447, 106.82274);
+            var mapProp = {
+                center: MyLatLng,
+                zoom: 12,
+                mapTypeId: google.maps.MapTypeId.G_NORMAL_MAP
+            };
+            map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+
+            var data = [
+                  { "Id": 1, "PlaceName": "Menteng Dalam", "TipeRumah": "48", "Longitude": "106.841433", "Latitude": "-6.228241" },
+                  { "Id": 2, "PlaceName": "Casablanca", "TipeRumah": "72", "Longitude": "106.846261", "Latitude": "-6.223918" },
+                  { "Id": 3, "PlaceName": "Kalibata", "TipeRumah": "72", "Longitude": "106.855432", "Latitude": "-6.256366" },
+                  { "Id": 4, "PlaceName": "Teuku Umar", "TipeRumah": "72", "Longitude": "106.833200", "Latitude": "-6.189872" }
+            ];
+
+            $.each(data, function (i, item) {
+                var marker = new google.maps.Marker({
+                    'position': new google.maps.LatLng(item.Longitude, item.Latitude),
+                    'map': map,
+                    'title': item.PlaceName
+                });
+
+                marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png')
+
+                var infowindow = new google.maps.InfoWindow({
+                    content: "<div class='infoDiv'><h2>" + item.PlaceName + "</h2>" + "<div><h4>Tipe Rumah: " + item.TipeRumah + "</h4></div></div>"
+                });
+
+                google.maps.event.addListener(marker, 'click', function () {
+                    infowindow.open(map, marker);
+                });
+            })
+        }
+    </script>
+}
